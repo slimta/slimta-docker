@@ -1,0 +1,23 @@
+version: 1
+
+formatters:
+  console:
+    format: '%(levelname)-8s %(name)-15s %(message)s'
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: console
+    stream: !!python/name:sys.stdout
+
+loggers:
+  slimta:
+    level: DEBUG
+    propagate: true
+
+root:
+  level: DEBUG
+  handlers: [console]
+
+# vim:sw=2:ts=2:sts=2:et:ai:

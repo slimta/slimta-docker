@@ -1,0 +1,92 @@
+process:
+  slimta: &process_slimta
+    logging: !include logging.yaml
+
+lookup:
+  addresses: &lookup_addresses
+    key_template: 'slimta/address/{address}'
+    type: 'redis'
+  domains: &lookup_domains
+    key_template: 'slimta/address/{domain}'
+    type: 'redis'
+
+rules:
+  inbound: &rules_inbound
+    banner: '{fqdn} ESMTP Mail Delivery Agent'
+    dnsbl: zen.spamhaus.org
+    reject_spf: [fail]
+    reject_spam:
+      type: spamassassin
+      host: !env SPAMD_HOST
+    lookup_recipients: *lookup_addresses
+  outbound: &rules_outbound
+    banner: '{fqdn} ESMTP Mail Submission Agent'
+    dnsbl: zen.spamhaus.org
+    lookup_credentials: *lookup_addresses
+  inbound_local: &rules_inbound_local
+    banner: '{fqdn} ESMTP Mail Deliver Agent'
+    lookup_recipients: *lookup_addresses
+  outbound_local: &rules_outbound_local
+    banner: '{fqdn} ESMTP Mail Submission Agent'
+
+tls:
+  main: &tls_main
+    keyfile: !env KEY_FILE
+    certfile: !env CERT_FILE
+
+edge:
+  inbound: &edge_inbound
+    type: smtp
+    queue: inbound
+    listener:
+      port: 1025
+    proxyprotocol: true
+    tls: *tls_main
+    rules: *rules_inbound
+  outbound: &edge_outbound
+    type: smtp
+    queue: outbound
+    listener:
+      port: 587
+    proxyprotocol: true
+    tls: *tls_main
+    rules: *rules_outbound
+  inbound_local: &edge_inbound_local
+    type: smtp
+    queue: inbound
+    listener:
+      interface: '127.0.0.1'
+      port: 25
+    rules: *rules_inbound_local
+  outbound_local: &edge_outbound_local
+    type: smtp
+    queue: outbound
+    listener:
+      interface: '127.0.0.1'
+      port: 1587
+    rules: *rules_outbound_local
+
+queue:
+  inbound: &queue_inbound
+    type: redis
+    host: !env REDIS_HOST
+    prefix: 'slimta/inbound/'
+    policies:
+      - type: add_date_header
+      - type: add_messageid_header
+      - type: add_received_header
+      - type: lookup
+        lookup: *lookup_addresses
+      - type: lookup
+        lookup: *lookup_domains
+  outbound: &queue_outbound
+    type: redis
+    host: !env REDIS_HOST
+    prefix: 'slimta/outbound/'
+    policies:
+      - type: add_date_header
+      - type: add_messageid_header
+      - type: add_received_header
+      - type: split_recipient_domain
+
+# vim:sw=2:ts=2:sts=2:et:ai:

@@ -1,0 +1,14 @@
+--debug
+--cert
+$CERT_FILE
+--key
+$KEY_FILE
+redis
+redis://$REDIS_HOST
+--prefix
+pymap
+--users-prefix
+slimta/address
+--users-json
+--select
+$PYMAP_SELECT

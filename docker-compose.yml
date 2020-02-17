@@ -1,0 +1,75 @@
+version: "3.7"
+services:
+
+  redis:
+    image: redis
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+
+  pymap:
+    image: pymap
+    build:
+      context: ./pymap
+    environment:
+      CERT_FILE: /run/secrets/cert_file
+      KEY_FILE: /run/secrets/key_file
+      REDIS_HOST: redis
+    depends_on:
+      - redis
+    secrets:
+      - cert_file
+      - key_file
+    ports:
+      - "143:143"
+
+  slimta-edge:
+    image: slimta-edge
+    build:
+      context: ./slimta
+      args:
+        slimta_config: edge.yaml
+    environment:
+      CERT_FILE: /run/secrets/cert_file
+      KEY_FILE: /run/secrets/key_file
+      REDIS_HOST: redis
+      SPAMD_HOST: spamassassin
+    depends_on:
+      - redis
+    secrets:
+      - cert_file
+      - key_file
+    ports:
+      - "1025:1025"
+      - "587:587"
+      - "25:25"
+      - "1587:1587"
+
+  slimta-relay:
+    image: slimta-relay
+    build:
+      context: ./slimta
+      args:
+        slimta_config: relay.yaml
+    environment:
+      CERT_FILE: /run/secrets/cert_file
+      KEY_FILE: /run/secrets/key_file
+      REDIS_HOST: redis
+      PYMAP_HOST: pymap
+    depends_on:
+      - redis
+    secrets:
+      - cert_file
+      - key_file
+
+  spamassassin:
+    image: dinkel/spamassassin
+
+volumes:
+  redis-data:
+
+secrets:
+  cert_file:
+    file: ./secrets/fullchain.pem
+  key_file:
+    file: ./secrets/privkey.pem
