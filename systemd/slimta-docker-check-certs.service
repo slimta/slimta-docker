@@ -1,7 +1,0 @@
-
-[Unit]
-ConditionPathExists=/etc/letsencrypt.env
-
-[Service]
-Type=oneshot
-ExecStart=/opt/slimta-docker/bin/check-certs

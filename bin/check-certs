@@ -1,7 +1,8 @@
 #!/bin/bash
 
+ENV_FILE=$1
+
 exec docker run --rm \
         --volume '/etc/ssl/private:/etc/ssl/private' \
-        --env-file /opt/slimta-docker/etc/host.env \
-        --env-file /opt/slimta-docker/etc/lexicon.env \
+        --env-file $ENV_FILE \
         letsencrypt

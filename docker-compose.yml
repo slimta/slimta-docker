@@ -27,19 +27,17 @@ services:
       args:
         slimta_config: edge.yaml
     environment:
+      FQDN: ${FQDN:?FQDN is required}
       REDIS_HOST: redis
       SPAMD_HOST: spamassassin
-    env_file: /opt/slimta-docker/etc/host.env
     depends_on:
       - redis
       - spamassassin
     volumes:
       - /etc/ssl/private:/etc/ssl/private
     ports:
-      - "1025:1025"
-      - "587:587"
       - "25:25"
-      - "1587:1587"
+      - "587:587"
 
   slimta-relay:
     image: slimta-relay
@@ -49,9 +47,9 @@ services:
         slimta_config: relay.yaml
         extra_install: pymap-admin
     environment:
+      FQDN: ${FQDN:?FQDN is required}
       REDIS_HOST: redis
       PYMAP_HOST: pymap
-    env_file: /opt/slimta-docker/etc/host.env
     depends_on:
       - redis
       - pymap

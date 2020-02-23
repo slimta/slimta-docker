@@ -1,69 +1,62 @@
 
 SHELL := /bin/bash
-SYSTEM ?= systemd
 
+.PHONY: all
 all: letsencrypt compose
 
 .PHONY: letsencrypt
-letsencrypt: /opt/slimta-docker/etc/host.env /opt/slimta-docker/etc/lexicon.env
+letsencrypt: config
 	docker build --tag letsencrypt letsencrypt
 
 .PHONY: compose
-compose: /opt/slimta-docker/etc/host.env
+compose: config
 	docker-compose build
 
 .PHONY: clean
 clean:
 	docker-compose down --rmi all
 
-/opt/slimta-docker/etc/:
-	mkdir -p $@
-	chown root:docker $@
-	chmod g+rx,g-w,o-rwx $@
+.PHONY: config
+config: .env
 
-/opt/slimta-docker/etc/host.env: | /opt/slimta-docker/etc/
-	echo; \
+.env:
+	echo; echo "See: https://github.com/slimta/slimta-docker/blob/master/README.md#dns"; \
 	read -p "FQDN: " fqdn; \
-	echo -en "FQDN=$$fqdn\n" > $@
-
-/opt/slimta-docker/etc/lexicon.env: | /opt/slimta-docker/etc/
 	echo; echo "See: https://github.com/AnalogJ/lexicon#providers"; \
 	read -p "DNS provider: " provider; \
 	read -p "Username: " username; \
 	stty -echo; read -p "Token: " token; stty echo; echo; \
-	echo -en "PROVIDER=$$provider\nLEXICON_$${provider^^}_USERNAME=$$username\nLEXICON_$${provider^^}_TOKEN=$$token\n" > $@
+	echo -en "FQDN=$$fqdn\nPROVIDER=$$provider\nLEXICON_$${provider^^}_USERNAME=$$username\nLEXICON_$${provider^^}_TOKEN=$$token\n" > $@
+	chmod o-rwx $@
 
-/etc/ssl/private/local/privkey.pem: | letsencrypt
-	/opt/slimta-docker/bin/check-certs
+.PHONY: cert
+cert: | letsencrypt
+	bin/check-certs $(shell pwd)/.env
 
 .PHONY: install
-install: all /etc/ssl/private/local/privkey.pem install-$(SYSTEM)
+install:
+	$(error Not implemented. Did you mean install-systemd?)
 
 .PHONY: uninstall
-uninstall: uninstall-$(SYSTEM)
+uninstall:
+	$(error Not implemented. Did you mean uninstall-systemd?)
+
+SYSTEMD_FILES := /etc/systemd/system/slimta-docker.service \
+	/etc/systemd/system/slimta-docker-check-certs.service \
+	/etc/systemd/system/slimta-docker-check-certs.timer \
+	/etc/systemd/system/slimta-docker-watch-certs.service \
+	/etc/systemd/system/slimta-docker-watch-certs.path
+
+/etc/systemd/system/%: system/systemd/%
+	sed -e 's:{{DIR}}:$(shell pwd):g' system/systemd/$(shell basename $@) > $@
 
 .PHONY: install-systemd
-install-systemd:
-	cp -f systemd/slimta-docker.service /etc/systemd/system/
-	cp -f systemd/slimta-docker-watch-certs.path /etc/systemd/system/
-	cp -f systemd/slimta-docker-watch-certs.service /etc/systemd/system/
-	cp -f systemd/slimta-docker-check-certs.timer /etc/systemd/system/
-	cp -f systemd/slimta-docker-check-certs.service /etc/systemd/system/
+install-systemd: all cert $(SYSTEMD_FILES)
 	systemctl daemon-reload
 	systemctl enable --now slimta-docker.service
 
 .PHONY: uninstall-systemd
 uninstall-systemd:
 	systemctl disable --now 'slimta-docker.service'
-	rm -f /etc/systemd/system/slimta-docker.service
-	rm -f /etc/systemd/system/slimta-docker-watch-certs.path
-	rm -f /etc/systemd/system/slimta-docker-watch-certs.service
-	rm -f /etc/systemd/system/slimta-docker-check-certs.timer
-	rm -f /etc/systemd/system/slimta-docker-check-certs.service
+	rm -f $(SYSTEMD_FILES)
 	systemctl daemon-reload
-
-.PHONY: install-none
-install-none:
-
-.PHONY: uninstall-none
-uninstall-none:

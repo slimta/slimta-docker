@@ -8,7 +8,7 @@ ExecStartPre=docker-compose down
 ExecStartPre=docker-compose up -d
 ExecStart=docker-compose logs -f
 ExecStop=docker-compose down
-WorkingDirectory=/opt/slimta-docker/
+WorkingDirectory={{DIR}}
 
 [Install]
 WantedBy=multi-user.target
