@@ -20,13 +20,13 @@ clean:
 config: .env
 
 .env:
-	echo; echo "See: https://github.com/slimta/slimta-docker/blob/master/README.md#dns"; \
+	echo; echo "See: https://github.com/slimta/slimta-docker/blob/master/README.md#building"; echo; \
 	read -p "FQDN: " fqdn; \
-	echo; echo "See: https://github.com/AnalogJ/lexicon#providers"; \
 	read -p "DNS provider: " provider; \
 	read -p "Username: " username; \
 	stty -echo; read -p "Token: " token; stty echo; echo; \
-	echo -en "FQDN=$$fqdn\nPROVIDER=$$provider\nLEXICON_$${provider^^}_USERNAME=$$username\nLEXICON_$${provider^^}_TOKEN=$$token\n" > $@
+	provider_up=$$(echo $${provider} | tr "[a-z]" "[A-Z]"); \
+	echo -en "FQDN=$$fqdn\nPROVIDER=$$provider\nLEXICON_$${provider_up}_USERNAME=$$username\nLEXICON_$${provider_up}_TOKEN=$$token\n" > $@
 	chmod o-rwx $@
 
 .PHONY: cert
