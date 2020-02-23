@@ -15,7 +15,6 @@ compose: /opt/slimta-docker/etc/host.env
 .PHONY: clean
 clean:
 	docker-compose down --rmi all
-	docker image prune
 
 /opt/slimta-docker/etc/:
 	mkdir -p $@
@@ -34,8 +33,11 @@ clean:
 	stty -echo; read -p "Token: " token; stty echo; echo; \
 	echo -en "PROVIDER=$$provider\nLEXICON_$${provider^^}_USERNAME=$$username\nLEXICON_$${provider^^}_TOKEN=$$token\n" > $@
 
+/etc/ssl/private/local/privkey.pem: | letsencrypt
+	/opt/slimta-docker/bin/check-certs
+
 .PHONY: install
-install: all install-$(SYSTEM)
+install: all /etc/ssl/private/local/privkey.pem install-$(SYSTEM)
 
 .PHONY: uninstall
 uninstall: uninstall-$(SYSTEM)
