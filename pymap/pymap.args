@@ -1,4 +1,6 @@
 --debug
+--admin-host
+0.0.0.0
 --cert
 $CERT_FILE
 --key

@@ -1,0 +1,8 @@
+
+[Unit]
+BindsTo=slimta-docker.service
+
+[Timer]
+OnCalendar=daily EST
+RandomizedDelaySec=3600
+Persistent=true

@@ -1,0 +1,6 @@
+
+[Unit]
+BindsTo=slimta-docker.service
+
+[Path]
+PathChanged=/etc/ssl/private/local/

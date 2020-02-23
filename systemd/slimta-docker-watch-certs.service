@@ -1,0 +1,5 @@
+
+[Service]
+Type=oneshot
+ExecStart=docker-compose restart pymap slimta-edge slimta-relay
+WorkingDirectory=/opt/slimta-docker/

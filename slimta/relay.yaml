@@ -1,5 +1,6 @@
 process:
   slimta: &process_slimta
+    fqdn: !env FQDN
     logging: !include logging.yaml
 
 queue:
@@ -22,13 +23,13 @@ relay:
   inbound: &relay_inbound
     type: pipe
     args:
-    - pymap-admin
-    - --admin-host
-    - !env PYMAP_HOST
-    - append
-    - --from
-    - '{sender}'
-    - '{recipient}'
+      - pymap-admin
+      - --host
+      - !env PYMAP_HOST
+      - append
+      - --from
+      - '{sender}'
+      - '{recipient}'
   outbound: &relay_outbound
     type: mx
     ehlo_as: '{fqdn}'

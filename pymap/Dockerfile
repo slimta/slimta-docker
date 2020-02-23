@@ -1,15 +1,19 @@
 FROM python:3.8
 
+VOLUME ["/etc/ssl/private"]
+
 EXPOSE 143
 EXPOSE 9090
 
-ARG pymap_install="pymap[redis,grpc,sieve] hiredis passlib"
-ARG pymap_select=1
+RUN pip install -U pip wheel setuptools typing-extensions
 
-RUN pip install -U pip wheel setuptools typing-extensions \
-	${pymap_install}
+ARG pymap_install="pymap[redis,admin,sieve] hiredis passlib"
+RUN pip install -U ${pymap_install}
 
-ENV PYMAP_SELECT=${pymap_select}
 COPY pymap.args /etc
+
+ENV PYMAP_SELECT=1
+ENV CERT_FILE=/etc/ssl/private/local/fullchain.pem
+ENV KEY_FILE=/etc/ssl/private/local/privkey.pem
 
 ENTRYPOINT ["pymap", "@/etc/pymap.args"]

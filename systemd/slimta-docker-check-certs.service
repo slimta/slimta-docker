@@ -1,0 +1,11 @@
+
+[Unit]
+ConditionPathExists=/etc/letsencrypt.env
+
+[Service]
+Type=oneshot
+ExecStart=docker run --rm \
+	--volume '/etc/ssl/private:/etc/ssl/private' \
+	--env-file /etc/slimta-docker/host.env \
+	--env-file /etc/slimta-docker/lexicon.env \
+	letsencrypt

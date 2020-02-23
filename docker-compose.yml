@@ -12,14 +12,11 @@ services:
     build:
       context: ./pymap
     environment:
-      CERT_FILE: /run/secrets/cert_file
-      KEY_FILE: /run/secrets/key_file
       REDIS_HOST: redis
     depends_on:
       - redis
-    secrets:
-      - cert_file
-      - key_file
+    volumes:
+      - /etc/ssl/private:/etc/ssl/private
     ports:
       - "143:143"
 
@@ -30,15 +27,14 @@ services:
       args:
         slimta_config: edge.yaml
     environment:
-      CERT_FILE: /run/secrets/cert_file
-      KEY_FILE: /run/secrets/key_file
       REDIS_HOST: redis
       SPAMD_HOST: spamassassin
+    env_file: /opt/slimta-docker/etc/host.env
     depends_on:
       - redis
-    secrets:
-      - cert_file
-      - key_file
+      - spamassassin
+    volumes:
+      - /etc/ssl/private:/etc/ssl/private
     ports:
       - "1025:1025"
       - "587:587"
@@ -51,25 +47,20 @@ services:
       context: ./slimta
       args:
         slimta_config: relay.yaml
+        extra_install: pymap-admin
     environment:
-      CERT_FILE: /run/secrets/cert_file
-      KEY_FILE: /run/secrets/key_file
       REDIS_HOST: redis
       PYMAP_HOST: pymap
+    env_file: /opt/slimta-docker/etc/host.env
     depends_on:
       - redis
-    secrets:
-      - cert_file
-      - key_file
+      - pymap
+    volumes:
+      - /etc/ssl/private:/etc/ssl/private
 
   spamassassin:
-    image: dinkel/spamassassin
+    build:
+      context: ./spamassassin
 
 volumes:
   redis-data:
-
-secrets:
-  cert_file:
-    file: ./secrets/fullchain.pem
-  key_file:
-    file: ./secrets/privkey.pem
