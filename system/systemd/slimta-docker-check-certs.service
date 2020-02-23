@@ -1,4 +1,0 @@
-
-[Service]
-Type=oneshot
-ExecStart={{DIR}}/bin/check-certs {{DIR}}/.env

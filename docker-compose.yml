@@ -8,7 +8,7 @@ services:
       - redis-data:/data
 
   pymap:
-    image: pymap
+    image: slimta/pymap
     build:
       context: ./pymap
     environment:
@@ -16,49 +16,63 @@ services:
     depends_on:
       - redis
     volumes:
-      - /etc/ssl/private:/etc/ssl/private
+      - private-data:/etc/ssl/private
     ports:
       - "143:143"
 
   slimta-edge:
-    image: slimta-edge
+    image: slimta/slimta-edge
     build:
       context: ./slimta
       args:
         slimta_config: edge.yaml
     environment:
-      FQDN: ${FQDN:?FQDN is required}
+      FQDN: ${FQDN}
       REDIS_HOST: redis
       SPAMD_HOST: spamassassin
     depends_on:
       - redis
       - spamassassin
     volumes:
-      - /etc/ssl/private:/etc/ssl/private
+      - private-data:/etc/ssl/private
     ports:
       - "25:25"
       - "587:587"
 
   slimta-relay:
-    image: slimta-relay
+    image: slimta/slimta-relay
     build:
       context: ./slimta
       args:
         slimta_config: relay.yaml
         extra_install: pymap-admin
     environment:
-      FQDN: ${FQDN:?FQDN is required}
+      FQDN: ${FQDN}
       REDIS_HOST: redis
       PYMAP_HOST: pymap
     depends_on:
       - redis
       - pymap
     volumes:
-      - /etc/ssl/private:/etc/ssl/private
+      - private-data:/etc/ssl/private
+
+  letsencrypt:
+    image: slimta/letsencrypt
+    build:
+      context: ./letsencrypt
+    environment:
+      FQDN: ${FQDN}
+    env_file: lexicon.env
+    volumes:
+      - letsencrypt-data:/var/lib/dehydrated
+      - private-data:/etc/ssl/private
 
   spamassassin:
+    image: slimta/spamassassin
     build:
       context: ./spamassassin
 
 volumes:
   redis-data:
+  letsencrypt-data:
+  private-data:

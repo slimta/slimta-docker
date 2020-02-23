@@ -1,6 +1,7 @@
 process:
   slimta: &process_slimta
     fqdn: !env FQDN
+    pid_file: /tmp/slimta.pid
     logging: !include logging.yaml
 
 lookup:
