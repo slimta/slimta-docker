@@ -1,10 +1,13 @@
 #!/bin/bash -e
 
 [ -n "$FQDN" ] || { echo "invalid \$FQDN"; exit 1; }
+[ -f $LEXICON_ENV ] || { echo "invalid \$LEXICON_ENV"; exit 1; }
 
 register.sh
 
 ln -sf $FQDN /etc/ssl/private/local
+
+source $LEXICON_ENV
 
 while true; do
 	dehydrated --cron \

@@ -25,4 +25,6 @@ COPY config /etc/dehydrated
 COPY register.sh /usr/local/bin
 COPY run-dehydrated.sh /usr/local/bin
 
+ENV LEXICON_ENV=/run/secrets/lexicon_env
+
 ENTRYPOINT ["run-dehydrated.sh"]

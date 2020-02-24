@@ -62,7 +62,8 @@ services:
       context: ./letsencrypt
     environment:
       FQDN: ${FQDN}
-    env_file: lexicon.env
+    secrets:
+      - lexicon_env
     volumes:
       - letsencrypt-data:/var/lib/dehydrated
       - private-data:/etc/ssl/private
@@ -71,6 +72,10 @@ services:
     image: slimta/spamassassin
     build:
       context: ./spamassassin
+
+secrets:
+  lexicon_env:
+    file: ./lexicon.env
 
 volumes:
   redis-data:
