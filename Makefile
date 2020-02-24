@@ -8,26 +8,25 @@ all: build next-steps
 build: config
 	docker-compose build
 
-.PHONY: up
-up: build
-	docker-compose up
-
 .PHONY: push
 push: build
 	docker-compose push
 
 .PHONY: deploy
-deploy: push
+deploy: config
 	$(shell cat .env) docker stack deploy -c docker-compose.yml slimta-docker
 
 .PHONY: next-steps
 next-steps:
 	$(warning )
-	$(warning Use 'make up' or 'make deploy':)
-	$(warning - 'make up' starts the app using 'docker-compose up')
-	$(warning - 'make deploy' uses docker swarm mode to deploy the app)
+	$(warning To run the app with docker-compose:)
+	$(warning $$ docker-compose up -d     # start the app)
+	$(warning $$ docker-compose logs -f   # tail the logs)
+	$(warning $$ docker-compose down      # stop the app)
 	$(warning )
-	$(warning See: https://github.com/slimta/slimta-docker/blob/master/README.md)
+	$(warning See:)
+	$(warning - https://github.com/slimta/slimta-docker/blob/master/README.md)
+	$(warning - https://docs.docker.com/compose/reference/)
 
 .PHONY: config
 config: .env lexicon.env
