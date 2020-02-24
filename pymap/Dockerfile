@@ -14,7 +14,7 @@ RUN apk --update add --virtual build-dependencies python-dev build-base \
 
 COPY pymap.args /etc
 
-ENV PYMAP_SELECT=1
+ENV REDIS_HOST=redis PYMAP_SELECT=1
 ENV CERT_FILE=/etc/ssl/private/local/fullchain.pem
 ENV KEY_FILE=/etc/ssl/private/local/privkey.pem
 

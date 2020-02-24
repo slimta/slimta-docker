@@ -53,6 +53,8 @@ queue:
   inbound: &queue_inbound
     type: redis
     host: !env REDIS_HOST
+    relay: inbound
+    bounce_queue: outbound
     prefix: 'slimta/inbound/'
     policies:
       - type: add_date_header
@@ -65,11 +67,31 @@ queue:
   outbound: &queue_outbound
     type: redis
     host: !env REDIS_HOST
+    relay: outbound
     prefix: 'slimta/outbound/'
     policies:
       - type: add_date_header
       - type: add_messageid_header
       - type: add_received_header
       - type: split_recipient_domain
+    retry:
+      maximum: 3
+      delay: '60*x'
+
+relay:
+  inbound: &relay_inbound
+    type: pipe
+    args:
+      - pymap-admin
+      - --host
+      - !env PYMAP_HOST
+      - append
+      - --from
+      - '{sender}'
+      - '{recipient}'
+  outbound: &relay_outbound
+    type: mx
+    ehlo_as: '{fqdn}'
+    ipv4_only: true
 
 # vim:sw=2:ts=2:sts=2:et:ai:

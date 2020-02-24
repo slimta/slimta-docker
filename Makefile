@@ -8,12 +8,20 @@ all: build next-steps
 build: config
 	docker-compose build
 
+.PHONY: clean
+clean:
+	docker-compose down --rmi all
+
 .PHONY: push
 push: build
 	docker-compose push
 
+.PHONY: pull
+pull:
+	docker-compose pull
+
 .PHONY: deploy
-deploy: config
+deploy: config pull
 	$(shell cat .env) docker stack deploy -c docker-compose.yml slimta-docker
 
 .PHONY: next-steps

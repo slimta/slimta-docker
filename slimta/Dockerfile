@@ -12,14 +12,13 @@ RUN apk --update add --virtual build-dependencies python-dev build-base libffi-d
   && pip install ${slimta_install} \
   && apk del build-dependencies
 
-ARG slimta_config
-COPY ${slimta_config} /etc/slimta/slimta.yaml
-COPY logging.yaml /etc/slimta/
+COPY slimta.yaml logging.yaml /etc/slimta/
 
+ENV REDIS_HOST=redis SPAMD_HOST=spamd PYMAP_HOST=pymap
 ENV CERT_FILE=/etc/ssl/private/local/fullchain.pem
 ENV KEY_FILE=/etc/ssl/private/local/privkey.pem
 
 HEALTHCHECK --interval=10s --retries=1 CMD \
 	test $KEY_FILE -ot /tmp/slimta.pid
 
-ENTRYPOINT ["slimta", "--no-daemon"]
+ENTRYPOINT ["slimta"]

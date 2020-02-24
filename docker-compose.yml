@@ -11,8 +11,6 @@ services:
     image: slimta/pymap
     build:
       context: ./pymap
-    environment:
-      REDIS_HOST: redis
     depends_on:
       - redis
     volumes:
@@ -21,18 +19,15 @@ services:
       - "143:143"
 
   slimta-edge:
-    image: slimta/slimta-edge
+    image: slimta/slimta
     build:
       context: ./slimta
-      args:
-        slimta_config: edge.yaml
+    entrypoint: slimta --no-relay
     environment:
       FQDN: ${FQDN}
-      REDIS_HOST: redis
-      SPAMD_HOST: spamassassin
     depends_on:
       - redis
-      - spamassassin
+      - spamd
     volumes:
       - private-data:/etc/ssl/private
     ports:
@@ -40,16 +35,12 @@ services:
       - "587:587"
 
   slimta-relay:
-    image: slimta/slimta-relay
+    image: slimta/slimta
     build:
       context: ./slimta
-      args:
-        slimta_config: relay.yaml
-        extra_install: pymap-admin
+    entrypoint: slimta --no-edge
     environment:
       FQDN: ${FQDN}
-      REDIS_HOST: redis
-      PYMAP_HOST: pymap
     depends_on:
       - redis
       - pymap
@@ -68,7 +59,7 @@ services:
       - letsencrypt-data:/var/lib/dehydrated
       - private-data:/etc/ssl/private
 
-  spamassassin:
+  spamd:
     image: slimta/spamassassin
     build:
       context: ./spamassassin
