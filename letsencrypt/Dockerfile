@@ -26,5 +26,6 @@ COPY register.sh /usr/local/bin
 COPY run-dehydrated.sh /usr/local/bin
 
 ENV LEXICON_ENV=/run/secrets/lexicon_env
+ENV OUTDIR=/etc/ssl/private
 
 ENTRYPOINT ["run-dehydrated.sh"]
