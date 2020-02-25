@@ -6,7 +6,7 @@ all: build next-steps
 
 .PHONY: build
 build: config
-	docker-compose build
+	docker-compose build $(SERVICES)
 
 .PHONY: clean
 clean:
@@ -14,11 +14,11 @@ clean:
 
 .PHONY: push
 push: build
-	docker-compose push
+	docker-compose push $(SERVICES)
 
 .PHONY: pull
 pull:
-	docker-compose pull
+	docker-compose pull $(SERVICES)
 
 .PHONY: deploy
 deploy: config pull
