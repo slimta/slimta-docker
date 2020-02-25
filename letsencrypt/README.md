@@ -4,10 +4,25 @@ Runs [dehydrated][1] daily in a Docker container.
 
 ### Environment
 
+* `DOMAINS`: The domains to generate certificates for. Default: empty
 * `LEXICON_ENV`: The path to the environment file containing [lexicon][5]
   secrets. Default: `/run/secrets/lexicon_env`
 * `OUTDIR`: The path to the output directory for certificates. Default:
   `/etc/ssl/private`
+
+#### Symbolic linking
+
+To provide applications with consistent paths, the entries in `$DOMAINS` can
+also be short names that will be linked to the full domain name, e.g.:
+
+```bash
+DOMAINS="mail www.example.com"
+DOMAIN_LN_mail="mail.example.com"
+```
+
+That will generate certificates for `mail.example.com` and `www.example.com`,
+and it will create a symbolic link from `mail` to `mail.example.com` in the
+output directory.
 
 ## slimta-docker
 

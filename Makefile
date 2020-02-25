@@ -21,8 +21,9 @@ pull:
 	docker-compose pull $(SERVICES)
 
 .PHONY: deploy
+deploy: export FQDN = $(shell source .env > /dev/null && echo $${FQDN})
 deploy: config pull
-	$(shell cat .env) docker stack deploy -c docker-compose.yml slimta-docker
+	docker stack deploy -c docker-compose.yml slimta-docker
 
 .PHONY: next-steps
 next-steps:

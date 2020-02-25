@@ -15,8 +15,8 @@ RUN apk --update add --virtual build-dependencies python-dev build-base libffi-d
 COPY slimta.yaml logging.yaml /etc/slimta/
 
 ENV REDIS_HOST=redis SPAMD_HOST=spamd PYMAP_HOST=pymap
-ENV CERT_FILE=/etc/ssl/private/local/fullchain.pem
-ENV KEY_FILE=/etc/ssl/private/local/privkey.pem
+ENV CERT_FILE=/etc/ssl/private/mail/fullchain.pem
+ENV KEY_FILE=/etc/ssl/private/mail/privkey.pem
 
 HEALTHCHECK --interval=10s --retries=1 CMD \
 	test $KEY_FILE -ot /tmp/slimta.pid

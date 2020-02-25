@@ -15,8 +15,8 @@ RUN apk --update add --virtual build-dependencies python-dev build-base \
 COPY pymap.args /etc
 
 ENV REDIS_HOST=redis PYMAP_SELECT=1
-ENV CERT_FILE=/etc/ssl/private/local/fullchain.pem
-ENV KEY_FILE=/etc/ssl/private/local/privkey.pem
+ENV CERT_FILE=/etc/ssl/private/mail/fullchain.pem
+ENV KEY_FILE=/etc/ssl/private/mail/privkey.pem
 
 HEALTHCHECK --interval=10s --retries=1 CMD \
 	test $KEY_FILE -ot /tmp/pymap.pid

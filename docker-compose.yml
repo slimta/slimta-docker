@@ -52,7 +52,8 @@ services:
     build:
       context: ./letsencrypt
     environment:
-      FQDN: ${FQDN}
+      DOMAINS: mail
+      DOMAIN_LN_mail: ${FQDN}
     secrets:
       - lexicon_env
     deploy:

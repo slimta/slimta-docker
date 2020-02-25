@@ -25,6 +25,7 @@ COPY config /etc/dehydrated
 COPY register.sh /usr/local/bin
 COPY run-dehydrated.sh /usr/local/bin
 
+ENV DOMAINS=
 ENV LEXICON_ENV=/run/secrets/lexicon_env
 ENV OUTDIR=/etc/ssl/private
 
