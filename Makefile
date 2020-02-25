@@ -22,7 +22,7 @@ pull:
 
 .PHONY: deploy
 deploy: config pull
-	. .env && docker stack deploy -c docker-compose.yml slimta-docker
+	$(shell cat .env) docker stack deploy -c docker-compose.yml slimta-docker
 
 .PHONY: next-steps
 next-steps:

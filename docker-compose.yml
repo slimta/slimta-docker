@@ -58,7 +58,7 @@ services:
     deploy:
       mode: global
     volumes:
-      - ${DEHYDRATED_DIR:-/var/lib/dehydrated}:/var/lib/dehydrated
+      - dehydrated-data:/var/lib/dehydrated
       - ${CERT_DIR:-/etc/ssl/private}:/etc/ssl/private
 
   spamd:
@@ -72,3 +72,4 @@ secrets:
 
 volumes:
   redis-data:
+  dehydrated-data:
