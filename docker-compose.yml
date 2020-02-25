@@ -14,7 +14,7 @@ services:
     depends_on:
       - redis
     volumes:
-      - private-data:/etc/ssl/private
+      - ${CERT_DIR:-/etc/ssl/private}:/etc/ssl/private
     ports:
       - "143:143"
 
@@ -29,7 +29,7 @@ services:
       - redis
       - spamd
     volumes:
-      - private-data:/etc/ssl/private
+      - ${CERT_DIR:-/etc/ssl/private}:/etc/ssl/private
     ports:
       - "25:25"
       - "587:587"
@@ -45,7 +45,7 @@ services:
       - redis
       - pymap
     volumes:
-      - private-data:/etc/ssl/private
+      - ${CERT_DIR:-/etc/ssl/private}:/etc/ssl/private
 
   letsencrypt:
     image: slimta/letsencrypt
@@ -55,9 +55,11 @@ services:
       FQDN: ${FQDN}
     secrets:
       - lexicon_env
+    deploy:
+      mode: global
     volumes:
-      - letsencrypt-data:/var/lib/dehydrated
-      - private-data:/etc/ssl/private
+      - ${DEHYDRATED_DIR:-/var/lib/dehydrated}:/var/lib/dehydrated
+      - ${CERT_DIR:-/etc/ssl/private}:/etc/ssl/private
 
   spamd:
     image: slimta/spamassassin
@@ -70,5 +72,3 @@ secrets:
 
 volumes:
   redis-data:
-  letsencrypt-data:
-  private-data:
