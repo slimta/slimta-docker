@@ -23,47 +23,57 @@ docker-compose logs -f   # tail the logs
 docker-compose down      # stop the app
 ```
 
-## Address Utility
+## Address Management
 
 Redis is used to manage deliverable addresses on the mailserver. The
-`./address-util.sh` script can help manage them:
+`pymap-admin` tool can help manage them:
 
 ```
-usage: ./address-util.sh <command> [data] [address|domain]
+usage: pymap-admin [-h] [--version] [--outfile PATH] [--host HOST] [--port PORT] {append,delete-user,get-user,list-users,ping,set-user} ...
 
-commands:
-	--list          List all the address records
-	--get           Show the current record
-	--set           Set the record with the new data
-	--update        Add additional data to the record
-	--delete        Delete the record
+Admin functions for a running pymap server.
 
-data:
-	--mailbox       Make the record a deliverable mailbox, with password
-	--alias VAL     Make the record an alias to VAL
+positional arguments:
+  {append,delete-user,get-user,list-users,ping,set-user}
+                        which admin command to run
+    append              append a message to a mailbox
+    delete-user         delete a user
+    get-user            get a user
+    list-users          list users
+    ping                ping the server
+    set-user            assign a password to a user
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --outfile PATH        the output file (default: stdout)
+  --host HOST           host to connect to
+  --port PORT           port to connect to
 ```
 
 Examples:
 
 ```bash
 # List all configured addresses
-./address-util.sh --list
+pymap-admin list-users
 
 # Add a new mailbox for address 'test@example.com'
-./address-util.sh --set --mailbox test@example.com
+pymap-admin set-user test@example.com
 
 # Add an alias from 'alias@example.com' to 'test@example.com'
-./address-util.sh --set --alias test@example.com alias@example.com
+pymap-admin set-user alias@example.com --no-password \
+    --param alias test@example.com
 
 # Add an alias for all 'other.com' addresses, e.g. 'foo@other.com' would
 # alias to 'test+foo@example.com'
-./address-util.sh --set --alias 'test+{localpart}@example.com' other.com
+pymap-admin set-user other.com --no-password \
+    --param alias 'test+{localpart}@example.com'
 
-# Get the raw JSON configuration for 'test@example.com'
-./address-util.sh --get test@example.com
+# Get the raw user configuration for 'test@example.com'
+pymap-admin get-user test@example.com
 
 # Delete the configuration for 'test@example.com'
-./address-util.sh --delete test@example.com
+pymap-admin delete-user test@example.com
 ```
 
 [1]: https://docs.docker.com/compose/reference/

@@ -1,8 +1,0 @@
-#!/bin/bash
-
-ENV_FILE=$1
-
-exec docker run --rm \
-        --volume '/etc/ssl/private:/etc/ssl/private' \
-        --env-file $ENV_FILE \
-        letsencrypt

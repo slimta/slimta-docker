@@ -26,6 +26,7 @@ rules:
   outbound: &rules_outbound
     banner: '{fqdn} ESMTP Mail Submission Agent'
     dnsbl: zen.spamhaus.org
+    password_hash: custom_app
     lookup_credentials: *lookup_addresses
 
 tls:

@@ -5,7 +5,7 @@ SHELL := /bin/bash
 all: build next-steps
 
 .PHONY: build
-build: config
+build:
 	docker-compose build $(SERVICES)
 
 .PHONY: clean
@@ -21,8 +21,11 @@ pull:
 	docker-compose pull $(SERVICES)
 
 .PHONY: deploy
-deploy: export FQDN = $(shell source .env > /dev/null && echo $${FQDN})
-deploy: config pull
+deploy: config stack-deploy
+
+.PHONY: stack-deploy
+stack-deploy: export FQDN = $(shell source .env > /dev/null && echo $${FQDN})
+stack-deploy: pull
 	docker stack deploy -c docker-compose.yml slimta-docker
 
 .PHONY: next-steps
