@@ -2,7 +2,7 @@
 --admin-public
 0.0.0.0:9090
 --admin-private
-0.0.0.0:9091
+0.0.0.0:50051
 --cert
 $CERT_FILE
 --key
