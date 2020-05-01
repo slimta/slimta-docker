@@ -87,7 +87,7 @@ relay:
       - --host
       - !env PYMAP_HOST
       - --port
-      - 9091
+      - '9091'
       - append
       - --from
       - '{sender}'
