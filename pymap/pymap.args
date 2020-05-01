@@ -1,11 +1,12 @@
 --debug
---admin-host
+--admin-private
 0.0.0.0
 --cert
 $CERT_FILE
 --key
 $KEY_FILE
 redis
+--address
 redis://$REDIS_HOST
 --prefix
 pymap
