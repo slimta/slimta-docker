@@ -4,6 +4,7 @@ VOLUME ["/etc/ssl/private"]
 
 EXPOSE 143
 EXPOSE 9090
+EXPOSE 9091
 
 RUN pip install -U pip wheel setuptools typing-extensions
 

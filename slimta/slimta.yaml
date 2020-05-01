@@ -86,7 +86,8 @@ relay:
       - pymap-admin
       - --host
       - !env PYMAP_HOST
-      - --no-verify-cert
+      - --port
+      - 9091
       - append
       - --from
       - '{sender}'

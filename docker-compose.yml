@@ -17,6 +17,7 @@ services:
       - ${CERT_DIR:-/etc/ssl/private}:/etc/ssl/private
     ports:
       - "143:143"
+      - "9090:9090"
 
   slimta-edge:
     image: slimta/slimta
