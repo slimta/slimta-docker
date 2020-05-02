@@ -4,7 +4,7 @@
 [ -f $LEXICON_ENV ] || { echo "invalid \$LEXICON_ENV"; exit 1; }
 [ -d $OUTDIR ] || { echo "invalid \$OUTDIR"; exit 1; }
 
-register.sh
+dehydrated --register --accept-terms
 
 domain_args=""
 for domain in $DOMAINS; do

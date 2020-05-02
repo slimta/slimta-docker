@@ -4,11 +4,11 @@ VOLUME ["/var/lib/dehydrated", "/etc/ssl/private"]
 
 RUN apk add --no-cache bash curl openssl dateutils
 
-ARG dehydrated_url="https://raw.githubusercontent.com/dehydrated-io/dehydrated/307eaadddfd49aeafda6984f11e6731329372cd5/dehydrated"
+ARG dehydrated_url="https://raw.githubusercontent.com/dehydrated-io/dehydrated/dc552c602eca94737b66e62f4c4087a4e8f251e4/dehydrated"
 RUN curl -o /usr/local/bin/dehydrated ${dehydrated_url}
 RUN chmod +x /usr/local/bin/dehydrated
 
-ARG lexicon_hook_url="https://raw.githubusercontent.com/AnalogJ/lexicon/bc1190d8f4dd12d024ee5f4975dd3175dbf215c6/examples/dehydrated.default.sh"
+ARG lexicon_hook_url="https://raw.githubusercontent.com/AnalogJ/lexicon/b4aae8275a479d580698fc5951ee502cb300ef6f/examples/dehydrated.default.sh"
 RUN curl -o /usr/local/bin/lexicon-hook.sh ${lexicon_hook_url}
 RUN chmod +x /usr/local/bin/lexicon-hook.sh
 
@@ -22,7 +22,6 @@ RUN apk --update add --virtual build-dependencies python-dev build-base libffi-d
 RUN mkdir -p /etc/dehydrated
 
 COPY config /etc/dehydrated
-COPY register.sh /usr/local/bin
 COPY run-dehydrated.sh /usr/local/bin
 
 ENV DOMAINS=

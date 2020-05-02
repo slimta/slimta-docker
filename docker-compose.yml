@@ -59,6 +59,8 @@ services:
       - lexicon_env
     deploy:
       mode: global
+      restart_policy:
+        delay: 10m
     volumes:
       - dehydrated-data:/var/lib/dehydrated
       - ${CERT_DIR:-/etc/ssl/private}:/etc/ssl/private
