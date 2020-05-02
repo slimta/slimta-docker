@@ -21,11 +21,11 @@ pull:
 	docker-compose pull $(SERVICES)
 
 .PHONY: deploy
-deploy: config stack-deploy
+deploy: config pull stack-deploy
 
 .PHONY: stack-deploy
 stack-deploy: export FQDN = $(shell source .env > /dev/null && echo $${FQDN})
-stack-deploy: pull
+stack-deploy:
 	docker stack deploy -c docker-compose.yml slimta-docker
 
 .PHONY: next-steps
@@ -54,5 +54,5 @@ lexicon.env:
 	read -p "Username: " username; \
 	stty -echo; read -p "Token: " token; stty echo; echo; \
 	provider_up=$$(echo $${provider} | tr "[a-z]" "[A-Z]"); \
-	echo -en "PROVIDER=$$provider\nLEXICON_$${provider_up}_USERNAME=$$username\nLEXICON_$${provider_up}_TOKEN=$$token\n" > $@
+	echo -en "export PROVIDER=$$provider\nexport LEXICON_$${provider_up}_USERNAME=$$username\nexport LEXICON_$${provider_up}_TOKEN=$$token\n" > $@
 	chmod o-rwx $@

@@ -19,6 +19,9 @@ done
 
 source $LEXICON_ENV
 
+[ -n "$PROVIDER" ] || { echo "empty \$PROVIDER"; exit 1; }
+[ -n "$(bash -c 'echo -n $PROVIDER')" ] || { echo "un-exported \$PROVIDER"; exit 1; }
+
 while true; do
 	dehydrated --cron \
 		--hook /usr/local/bin/lexicon-hook.sh \
