@@ -14,7 +14,7 @@ for domain in $DOMAINS; do
 		ln -sf $link_dest $OUTDIR/$domain
 		domain=$link_dest
 	fi
-	domain_args="$domain_args --domain $domain"
+	domain_args="$domain_args $domain"
 done
 
 source $LEXICON_ENV
@@ -23,11 +23,17 @@ source $LEXICON_ENV
 [ -n "$(bash -c 'echo -n $PROVIDER')" ] || { echo "un-exported \$PROVIDER"; exit 1; }
 
 while true; do
-	dehydrated --cron \
-		--hook /usr/local/bin/lexicon-hook.sh \
-		--challenge dns-01 \
-		--out $OUTDIR \
-		$domain_args
+	for domain in $domain_args; do
+		dehydrated --cron \
+			--hook /usr/local/bin/lexicon-hook.sh \
+			--challenge dns-01 \
+			--out $OUTDIR \
+			--domain $domain
+		pushd $OUTDIR/$domain
+		cat fullchain.pem privkey.pem > both.pem
+		chmod og-rwx both.pem
+		popd
+	done
 
 	sleep_for=$(datediff now "$(dateadd today +1d) 03:00" -f %Ss)
 	echo "Sleeping $sleep_for..."
