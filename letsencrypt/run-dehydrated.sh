@@ -28,7 +28,8 @@ while true; do
 			--hook /usr/local/bin/lexicon-hook.sh \
 			--challenge dns-01 \
 			--out $OUTDIR \
-			--domain $domain
+			--domain $domain \
+			--domain www.$domain
 		pushd $OUTDIR/$domain
 		cat fullchain.pem privkey.pem > both.pem
 		chmod og-rwx both.pem
