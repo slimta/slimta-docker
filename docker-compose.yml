@@ -72,7 +72,7 @@ services:
 
 secrets:
   lexicon_env:
-    file: ./lexicon.env
+    file: $HOME/.docker-secrets/lexicon.env
 
 volumes:
   redis-data:
