@@ -4,6 +4,8 @@ services:
   redis:
     image: redis
     command: ["redis-server", "--appendonly", "yes"]
+    deploy:
+      replicas: 1
     volumes:
       - redis-data:/data
 

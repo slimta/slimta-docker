@@ -1,4 +1,6 @@
 
+$(if $(filter oneshell,${.FEATURES}),,$(error make must support .ONESHELL))
+.ONESHELL:
 SHELL := /bin/bash
 
 SECRETS_DIR ?= $(HOME)/.docker-secrets
@@ -24,12 +26,16 @@ pull:
 	docker-compose pull $(SERVICES)
 
 .PHONY: deploy
-deploy: config pull stack-deploy
+deploy: pull config stack-deploy
 
 .PHONY: stack-deploy
-stack-deploy: export FQDN = $(shell source .env > /dev/null && echo $${FQDN})
 stack-deploy:
-	docker stack deploy --with-registry-auth -c docker-compose.yml slimta-docker
+	source .env > /dev/null
+	export FQDN
+	docker stack deploy --with-registry-auth \
+		-c docker-compose.yml \
+		$(shell test -f docker-compose.override.yml && echo "-c docker-compose.override.yml" || :) \
+		slimta-docker
 
 .PHONY: next-steps
 next-steps:
@@ -47,18 +53,28 @@ next-steps:
 config: .env $(SECRETS_DIR) $(SECRETS)
 
 .env:
-	echo; echo "Enter the fully-qualified domain name of this server, e.g. 'mail.example.com':"; echo; \
-	read -p "FQDN: " fqdn; \
-	echo -en "FQDN=$$fqdn\n" > $@
+	echo
+	echo "Enter the fully-qualified domain name of this server, e.g. 'mail.example.com'."
+	echo "Note: templates may be used in accordance with:"
+	echo "	https://docs.docker.com/engine/reference/commandline/service_create/#create-services-using-templates"
+	echo
+	default=$$(hostname -f)
+	read -p "FQDN [$$default]: " fqdn
+	echo "FQDN='$${fqdn:-$$default}'" > $@
 
 $(SECRETS_DIR):
 	mkdir -p $@
 	chmod og-rwx $@
 
 $(SECRETS_DIR)/lexicon.env:
-	echo; echo "Enter your DNS provider information, for automated Let's Encrypt certificates:"; echo; \
-	read -p "DNS provider: " provider; \
-	read -p "Username: " username; \
-	stty -echo; read -p "Token: " token; stty echo; echo; \
-	provider_up=$$(echo $${provider} | tr "[a-z]" "[A-Z]"); \
-	echo -en "export PROVIDER=$$provider\nexport LEXICON_$${provider_up}_USERNAME=$$username\nexport LEXICON_$${provider_up}_TOKEN=$$token\n" > $@
+	echo
+	echo "Enter your DNS provider information, for automated Let's Encrypt certificates:"
+	echo
+	read -p "DNS provider: " provider
+	read -p "Username: " username
+	stty -echo
+	read -p "Token: " token
+	stty echo
+	echo
+	provider_up=$$(echo $$provider | tr "[a-z]" "[A-Z]")
+	echo -en "export PROVIDER='$$provider'\nexport LEXICON_$${provider_up}_USERNAME='$$username'\nexport LEXICON_$${provider_up}_TOKEN='$$token'\n" > $@
