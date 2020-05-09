@@ -26,6 +26,8 @@ services:
     build:
       context: ./slimta
     entrypoint: slimta --no-relay
+    deploy:
+      mode: global
     environment:
       FQDN: ${FQDN}
     depends_on:
@@ -34,8 +36,14 @@ services:
     volumes:
       - ${CERT_DIR:-/etc/ssl/private}:/etc/ssl/private
     ports:
-      - "25:25"
-      - "587:587"
+      - target: 25
+        published: 25
+        protocol: tcp
+        mode: host
+      - target: 587
+        published: 587
+        protocol: tcp
+        mode: host
 
   slimta-relay:
     image: slimta/slimta
