@@ -3,6 +3,7 @@ FROM python:3.8-alpine
 VOLUME ["/etc/ssl/private"]
 
 EXPOSE 143
+EXPOSE 4190
 EXPOSE 9090
 EXPOSE 50051
 
