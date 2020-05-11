@@ -1,6 +1,34 @@
 version: "3.7"
 services:
 
+  proxy:
+    image: icgood/proxy-service
+    deploy:
+      mode: global
+    entrypoint: >-
+      proxyprotocol-server
+        --service :143 pymap:143
+        --service :4190 pymap:4190
+        --service :25 slimta-edge:25
+        --service :587 slimta-edge:587
+    ports:
+      - target: 143
+        published: 143
+        protocol: tcp
+        mode: host
+      - target: 4190
+        published: 4190
+        protocol: tcp
+        mode: host
+      - target: 25
+        published: 25
+        protocol: tcp
+        mode: host
+      - target: 587
+        published: 587
+        protocol: tcp
+        mode: host
+
   redis:
     image: redis
     command: ["redis-server", "--appendonly", "yes"]
@@ -20,8 +48,6 @@ services:
     volumes:
       - ${CERT_DIR:-/etc/ssl/private}:/etc/ssl/private
     ports:
-      - "143:143"
-      - "4190:4190"
       - "9090:9090"
 
   slimta-edge:
@@ -29,8 +55,6 @@ services:
     build:
       context: ./slimta
     entrypoint: slimta --no-relay
-    deploy:
-      mode: global
     environment:
       FQDN: ${FQDN}
     depends_on:
@@ -38,15 +62,6 @@ services:
       - spamd
     volumes:
       - ${CERT_DIR:-/etc/ssl/private}:/etc/ssl/private
-    ports:
-      - target: 25
-        published: 25
-        protocol: tcp
-        mode: host
-      - target: 587
-        published: 587
-        protocol: tcp
-        mode: host
 
   slimta-relay:
     image: slimta/slimta
@@ -62,12 +77,11 @@ services:
       - ${CERT_DIR:-/etc/ssl/private}:/etc/ssl/private
 
   letsencrypt:
-    image: slimta/letsencrypt
-    build:
-      context: ./letsencrypt
+    image: icgood/letsencrypt-service
     environment:
-      DOMAINS: mail
-      DOMAIN_LN_mail: ${FQDN}
+      CERTS: mail
+      DOMAIN_mail: ${FQDN}
+      ALTS_mail: ${ALTS}
     secrets:
       - lexicon_env
     deploy:

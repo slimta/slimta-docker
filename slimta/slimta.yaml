@@ -40,6 +40,7 @@ edge:
     queue: inbound
     listener:
       port: 25
+    proxyprotocol: true
     tls: *tls_main
     rules: *rules_inbound
   outbound: &edge_outbound
@@ -47,6 +48,7 @@ edge:
     queue: outbound
     listener:
       port: 587
+    proxyprotocol: true
     tls: *tls_main
     rules: *rules_outbound
 

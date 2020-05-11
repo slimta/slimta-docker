@@ -31,7 +31,7 @@ deploy: pull config stack-deploy
 .PHONY: stack-deploy
 stack-deploy:
 	source .env > /dev/null
-	export FQDN
+	export FQDN ALTS
 	docker stack deploy --with-registry-auth \
 		-c docker-compose.yml \
 		$(shell test -f docker-compose.override.yml && echo "-c docker-compose.override.yml" || :) \
@@ -60,7 +60,13 @@ config: .env $(SECRETS_DIR) $(SECRETS)
 	echo
 	default=$$(hostname -f)
 	read -p "FQDN [$$default]: " fqdn
-	echo "FQDN='$${fqdn:-$$default}'" > $@
+	echo
+	echo "Enter any alternate hostnames for the server, e.g. 'imap.example.com'."
+	echo "Note: templates may be used in accordance with:"
+	echo "	https://docs.docker.com/engine/reference/commandline/service_create/#create-services-using-templates"
+	echo
+	read -p "Alternate hostnames []: " alts
+	echo -en "FQDN='$${fqdn:-$$default}'\nALTS='$$alts'\n" > $@
 
 $(SECRETS_DIR):
 	mkdir -p $@
