@@ -10,7 +10,7 @@ EXPOSE 50051
 RUN pip install -U pip wheel setuptools typing-extensions
 
 ARG pymap_install="pymap[redis,admin,sieve] hiredis passlib pid"
-RUN apk --update add --virtual build-dependencies python-dev build-base \
+RUN apk --update add --virtual build-dependencies python3-dev build-base \
   && pip install ${pymap_install} \
   && apk del build-dependencies
 

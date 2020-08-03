@@ -8,7 +8,7 @@ EXPOSE 587
 RUN pip install -U pip wheel setuptools
 
 ARG slimta_install="slimta[redisstorage,spf] pymap-admin"
-RUN apk --update add --virtual build-dependencies python-dev build-base libffi-dev \
+RUN apk --update add --virtual build-dependencies python3-dev build-base libffi-dev \
   && pip install ${slimta_install} \
   && apk del build-dependencies
 
