@@ -1,8 +1,8 @@
-version: "3.7"
+version: "3.8"
 services:
 
   proxy:
-    image: icgood/proxy-service
+    image: icgood/proxy-protocol
     deploy:
       mode: global
     entrypoint: >-
@@ -38,17 +38,37 @@ services:
       - redis-data:/data
 
   pymap:
-    image: slimta/pymap
-    build:
-      context: ./pymap
+    image: icgood/pymap
     environment:
       FQDN: ${FQDN}
     depends_on:
       - redis
     volumes:
       - ${CERT_DIR:-/etc/ssl/private}:/etc/ssl/private
+    environment:
+      REDIS_HOST: redis
+      PYMAP_SELECT: 1
+      CERT_FILE: /etc/ssl/private/mail/fullchain.pem
+      KEY_FILE: /etc/ssl/private/mail/privkey.pem
+    entrypoint: >-
+      pymap --debug
+        --proxy-protocol detect
+        --admin-public 0.0.0.0:9090
+        --admin-private 0.0.0.0:50051
+        --cert $CERT_FILE
+        --key $KEY_FILE
+        redis
+        --address redis://$REDIS_HOST
+        --prefix pymap
+        --users-prefix slimta/address
+        --users-json
+        --select $PYMAP_SELECT
     ports:
       - "9090:9090"
+    healthcheck:
+      interval: 10s
+      retries: 1
+      test: test $KEY_FILE -ot /tmp/pymap.pid
 
   slimta-edge:
     image: slimta/slimta
