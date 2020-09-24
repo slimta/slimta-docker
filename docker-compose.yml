@@ -5,12 +5,11 @@ services:
     image: icgood/proxy-protocol
     deploy:
       mode: global
-    entrypoint: >-
-      proxyprotocol-server
-        --service :143 pymap:143
-        --service :4190 pymap:4190
-        --service :25 slimta-edge:25
-        --service :587 slimta-edge:587
+    command: >-
+      --service :143 pymap:143
+      --service :4190 pymap:4190
+      --service :25 slimta-edge:25
+      --service :587 slimta-edge:587
     ports:
       - target: 143
         published: 143
@@ -46,29 +45,25 @@ services:
     volumes:
       - ${CERT_DIR:-/etc/ssl/private}:/etc/ssl/private
     environment:
-      REDIS_HOST: redis
-      PYMAP_SELECT: 1
       CERT_FILE: /etc/ssl/private/mail/fullchain.pem
       KEY_FILE: /etc/ssl/private/mail/privkey.pem
-    entrypoint: >-
-      pymap --debug
-        --proxy-protocol detect
-        --admin-public 0.0.0.0:9090
-        --admin-private 0.0.0.0:50051
-        --cert $CERT_FILE
-        --key $KEY_FILE
-        redis
-        --address redis://$REDIS_HOST
-        --prefix pymap
-        --users-prefix slimta/address
-        --users-json
-        --select $PYMAP_SELECT
+    command: >-
+      --debug
+      --proxy-protocol detect
+      --admin-public 0.0.0.0:9090
+      --admin-private 0.0.0.0:50051
+      redis
+      --address redis://redis
+      --prefix pymap
+      --users-prefix slimta/address
+      --users-json
+      --select 1
     ports:
       - "9090:9090"
     healthcheck:
       interval: 10s
       retries: 1
-      test: test $KEY_FILE -ot /tmp/pymap.pid
+      test: test $$KEY_FILE -ot /tmp/pymap.pid
 
   slimta-edge:
     image: slimta/slimta
