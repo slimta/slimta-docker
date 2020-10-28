@@ -50,8 +50,7 @@ services:
     command: >-
       --debug
       --proxy-protocol detect
-      --admin-public 0.0.0.0:9090
-      --admin-private 0.0.0.0:50051
+      --admin 0.0.0.0:50051
       redis
       --address redis://redis
       --prefix pymap
