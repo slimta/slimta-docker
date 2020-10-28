@@ -58,7 +58,7 @@ services:
       --users-json
       --select 1
     ports:
-      - "9090:9090"
+      - "50051:50051"
     healthcheck:
       interval: 10s
       retries: 1
