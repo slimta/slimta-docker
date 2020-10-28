@@ -50,7 +50,7 @@ services:
     command: >-
       --debug
       --proxy-protocol detect
-      --admin 0.0.0.0:50051
+      --admin-port 50051
       redis
       --address redis://redis
       --prefix pymap
