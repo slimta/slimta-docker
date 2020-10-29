@@ -84,6 +84,8 @@ services:
     entrypoint: slimta --no-edge
     environment:
       FQDN: ${FQDN}
+    secrets:
+      - pymap_admin_token
     depends_on:
       - redis
       - pymap
@@ -114,6 +116,8 @@ services:
 secrets:
   lexicon_env:
     file: $HOME/.docker-secrets/lexicon.env
+  pymap_admin_token:
+    file: $HOME/.docker-secrets/pymap-admin.token
 
 volumes:
   redis-data:

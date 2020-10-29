@@ -17,6 +17,7 @@ COPY slimta.yaml logging.yaml /etc/slimta/
 ENV REDIS_HOST=redis SPAMD_HOST=spamd PYMAP_HOST=pymap
 ENV CERT_FILE=/etc/ssl/private/mail/fullchain.pem
 ENV KEY_FILE=/etc/ssl/private/mail/privkey.pem
+ENV PYMAP_ADMIN_TOKEN_FILE=/run/secrets/pymap_admin_token
 
 HEALTHCHECK --interval=10s --retries=1 CMD \
 	test $KEY_FILE -ot /tmp/slimta.pid
