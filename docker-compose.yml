@@ -61,6 +61,10 @@ services:
       --users-prefix slimta/address
       --users-json
       --select 1
+    networks:
+      default:
+        aliases:
+          - ${PYMAP_HOST}
     healthcheck:
       interval: 10s
       retries: 1
@@ -79,6 +83,10 @@ services:
       - spamd
     volumes:
       - ${CERT_DIR:-/etc/ssl/private}:/etc/ssl/private
+    networks:
+      default:
+        aliases:
+          - ${SLIMTA_HOST}
 
   slimta-relay:
     image: slimta/slimta
@@ -101,7 +109,7 @@ services:
     environment:
       CERTS: mail
       DOMAIN_mail: ${FQDN}
-      ALTS_mail: ${ALTS}
+      ALTS_mail: "${PYMAP_HOST} ${SLIMTA_HOST} ${MX_HOSTS} ${ALTS}"
     secrets:
       - lexicon_env
     deploy:

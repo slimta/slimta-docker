@@ -53,20 +53,27 @@ next-steps:
 config: .env $(SECRETS_DIR) $(SECRETS)
 
 .env:
-	echo
-	echo "Enter the fully-qualified domain name of this server, e.g. 'mail.example.com'."
-	echo "Note: templates may be used in accordance with:"
+	echo "Note: templates may be used  for all input in accordance with:"
 	echo "	https://docs.docker.com/engine/reference/commandline/service_create/#create-services-using-templates"
 	echo
+	echo "Enter the fully-qualified domain name of this server, e.g. 'mail.example.com':"
 	default=$$(hostname -f)
 	read -p "FQDN [$$default]: " fqdn
+	fqdn="$${fqdn:-$$default}"
 	echo
-	echo "Enter any alternate hostnames for the server, e.g. 'imap.example.com'."
-	echo "Note: templates may be used in accordance with:"
-	echo "	https://docs.docker.com/engine/reference/commandline/service_create/#create-services-using-templates"
+	echo "Enter the external hostname that will be used for IMAP access, e.g. 'imap.example.com':"
+	read -p "IMAP access [$$fqdn]: " imap
+	imap="$${imap:-$$fqdn}"
 	echo
-	read -p "Alternate hostnames []: " alts
-	echo -en "FQDN='$${fqdn:-$$default}'\nALTS='$$alts'\n" > $@
+	echo "Enter the external hostname that will be used for SMTP submission if any, e.g. 'smtp.example.com':"
+	read -p "SMTP submission []: " smtp
+	echo
+	echo "Enter all external hostnames that will be used for MX relaying if any, e.g. 'mx1.example.com mx2.example.com':"
+	read -p "Alternate hostnames []: " mx
+	echo
+	echo "Enter any other alternate hostnames in use if any."
+	read -p "Other hostnames []: " alts
+	echo -en "FQDN='$$fqdn'\nPYMAP_HOST='$$imap'\nSLIMTA_HOST='$$smtp'\nMX_HOSTS='$$mx'\nALTS='$$alts'\n" > $@
 
 $(SECRETS_DIR):
 	mkdir -p $@
