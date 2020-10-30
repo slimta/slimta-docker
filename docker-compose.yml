@@ -8,8 +8,9 @@ services:
     command: >-
       --service :143 pymap:143
       --service :4190 pymap:4190
-      --service :25 slimta-edge:25
-      --service :587 slimta-edge:587
+      --service :50051 pymap:50051?pp=noop
+      --service :25 slimta-edge:25?pp=v1
+      --service :587 slimta-edge:587?pp=v1
     ports:
       - target: 143
         published: 143
@@ -17,6 +18,10 @@ services:
         mode: host
       - target: 4190
         published: 4190
+        protocol: tcp
+        mode: host
+      - target: 50051
+        published: 50051
         protocol: tcp
         mode: host
       - target: 25
@@ -50,15 +55,12 @@ services:
     command: >-
       --debug
       --proxy-protocol detect
-      --admin-port 50051
       redis
       --address redis://redis
       --prefix pymap
       --users-prefix slimta/address
       --users-json
       --select 1
-    ports:
-      - "50051:50051"
     healthcheck:
       interval: 10s
       retries: 1
@@ -71,6 +73,7 @@ services:
     entrypoint: slimta --no-relay
     environment:
       FQDN: ${FQDN}
+      PYMAP_HOST: ${FQDN}
     depends_on:
       - redis
       - spamd
@@ -84,6 +87,7 @@ services:
     entrypoint: slimta --no-edge
     environment:
       FQDN: ${FQDN}
+      PYMAP_HOST: ${FQDN}
     secrets:
       - pymap_admin_token
     depends_on:
