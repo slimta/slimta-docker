@@ -9,8 +9,8 @@ services:
       --service :143 pymap:143
       --service :4190 pymap:4190
       --service :50051 pymap:50051?pp=noop
-      --service :25 slimta-edge:25?pp=v1
-      --service :587 slimta-edge:587?pp=v1
+      --service :25 slimta-edge:25
+      --service :587 slimta-edge:587
     ports:
       - target: 143
         published: 143
@@ -73,7 +73,7 @@ services:
     entrypoint: slimta --no-relay
     environment:
       FQDN: ${FQDN}
-      PYMAP_HOST: ${FQDN}
+      PYMAP_HOST:
     depends_on:
       - redis
       - spamd
@@ -87,7 +87,7 @@ services:
     entrypoint: slimta --no-edge
     environment:
       FQDN: ${FQDN}
-      PYMAP_HOST: ${FQDN}
+      PYMAP_HOST:
     secrets:
       - pymap_admin_token
     depends_on:
