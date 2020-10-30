@@ -31,7 +31,7 @@ deploy: pull config stack-deploy
 .PHONY: stack-deploy
 stack-deploy:
 	source .env > /dev/null
-	export FQDN ALTS
+	export FQDN PYMAP_HOST SLIMTA_HOST MX_HOSTS ALTS
 	docker stack deploy --with-registry-auth \
 		-c docker-compose.yml \
 		$(shell test -f docker-compose.override.yml && echo "-c docker-compose.override.yml" || :) \
