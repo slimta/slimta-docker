@@ -77,7 +77,6 @@ services:
     entrypoint: slimta --no-relay
     environment:
       FQDN: ${FQDN}
-      PYMAP_HOST:
     depends_on:
       - redis
       - spamd
@@ -95,7 +94,8 @@ services:
     entrypoint: slimta --no-edge
     environment:
       FQDN: ${FQDN}
-      PYMAP_HOST:
+      PYMAP_ADMIN_HOST: ${PYMAP_HOST}
+      PYMAP_ADMIN_PORT: 50051
     secrets:
       - pymap_admin_token
     depends_on:

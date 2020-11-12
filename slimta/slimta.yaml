@@ -86,10 +86,6 @@ relay:
     type: pipe
     args:
       - pymap-admin
-      - --host
-      - !env PYMAP_HOST
-      - --port
-      - '50051'
       - append
       - --from
       - '{sender}'
