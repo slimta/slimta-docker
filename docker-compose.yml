@@ -50,17 +50,24 @@ services:
     volumes:
       - ${CERT_DIR:-/etc/ssl/private}:/etc/ssl/private
     environment:
+      SWIM_SECRET_FILE: /run/secrets/pymap_swim_secrets
+      SWIM_NAME: pymap:9999
       CERT_FILE: /etc/ssl/private/mail/fullchain.pem
       KEY_FILE: /etc/ssl/private/mail/privkey.pem
+    secrets:
+      - pymap_swim_secret
     command: >-
       --debug
       --proxy-protocol detect
+      --swim-udp-discovery
       redis
       --address redis://redis
       --prefix pymap
       --users-prefix slimta/address
       --users-json
       --select 1
+    deploy:
+      replicas: 2
     networks:
       default:
         aliases:
@@ -130,6 +137,8 @@ secrets:
     file: $HOME/.docker-secrets/lexicon.env
   pymap_admin_token:
     file: $HOME/.docker-secrets/pymap-admin.token
+  pymap_swim_secret:
+    file: $HOME/.docker-secrets/pymap-swim-secret
 
 volumes:
   redis-data:
