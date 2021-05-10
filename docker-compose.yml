@@ -50,7 +50,7 @@ services:
     volumes:
       - ${CERT_DIR:-/etc/ssl/private}:/etc/ssl/private
     environment:
-      SWIM_SECRET_FILE: /run/secrets/pymap_swim_secrets
+      SWIM_SECRET_FILE: /run/secrets/pymap_swim_secret
       SWIM_NAME: tasks.pymap:9999
       CERT_FILE: /etc/ssl/private/mail/fullchain.pem
       KEY_FILE: /etc/ssl/private/mail/privkey.pem
