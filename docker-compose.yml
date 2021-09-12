@@ -73,10 +73,6 @@ services:
       default:
         aliases:
           - ${PYMAP_HOST}
-    healthcheck:
-      interval: 10s
-      retries: 1
-      test: test $$KEY_FILE -ot /tmp/pymap.pid
 
   slimta-edge:
     image: slimta/slimta
