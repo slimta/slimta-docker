@@ -66,7 +66,7 @@ services:
       --prefix pymap
       --users-prefix slimta/address
       --users-json
-      --select 1
+      --data-address redis://redis/1
     deploy:
       replicas: 2
     networks:
