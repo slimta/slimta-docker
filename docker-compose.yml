@@ -44,13 +44,12 @@ services:
 
   pymap:
     image: icgood/pymap
-    environment:
-      FQDN: ${FQDN}
     depends_on:
       - redis
     volumes:
       - ${CERT_DIR:-/etc/ssl/private}:/etc/ssl/private
     environment:
+      FQDN: ${FQDN}
       SWIM_SECRET_FILE: /run/secrets/pymap_swim_secret
       SWIM_NAME: tasks.pymap:9999
       CERT_FILE: /etc/ssl/private/mail/fullchain.pem
