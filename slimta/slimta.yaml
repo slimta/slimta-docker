@@ -25,7 +25,9 @@ rules:
     lookup_recipients: *lookup_addresses
   outbound: &rules_outbound
     banner: '{fqdn} ESMTP Mail Submission Agent'
-    dnsbl: zen.spamhaus.org
+    dnsbl:
+      address: zen.spamhaus.org
+      ignore: ['127.0.0.10/31']
     password_hash: custom_app
     lookup_credentials: *lookup_addresses
 
