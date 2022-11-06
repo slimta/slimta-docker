@@ -28,7 +28,6 @@ rules:
     dnsbl:
       address: zen.spamhaus.org
       ignore: ['127.0.0.10/31']
-    password_hash: custom_app
     lookup_credentials: *lookup_addresses
 
 tls:

@@ -16,6 +16,7 @@ build:
 .PHONY: clean
 clean:
 	docker-compose down --rmi all
+	docker image prune --force
 
 .PHONY: push
 push: build
