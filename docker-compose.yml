@@ -2,7 +2,7 @@ version: "3.8"
 services:
 
   proxy:
-    image: icgood/proxy-protocol
+    image: ghcr.io/icgood/proxy-protocol
     deploy:
       mode: global
     command: >-
@@ -43,7 +43,7 @@ services:
       - redis-data:/data
 
   pymap:
-    image: icgood/pymap
+    image: ghcr.io/icgood/pymap
     depends_on:
       - redis
     volumes:
@@ -73,7 +73,7 @@ services:
           - ${PYMAP_HOST}
 
   slimta-edge:
-    image: slimta/slimta
+    image: ghcr.io/slimta/slimta
     build:
       context: ./slimta
     entrypoint: slimta --no-relay
@@ -90,7 +90,7 @@ services:
           - ${SLIMTA_HOST}
 
   slimta-relay:
-    image: slimta/slimta
+    image: ghcr.io/slimta/slimta
     build:
       context: ./slimta
     entrypoint: slimta --no-edge
@@ -107,7 +107,7 @@ services:
       - ${CERT_DIR:-/etc/ssl/private}:/etc/ssl/private
 
   letsencrypt:
-    image: icgood/letsencrypt-service
+    image: ghcr.io/icgood/letsencrypt-service
     environment:
       CERTS: mail
       DOMAIN_mail: ${FQDN}
@@ -123,7 +123,7 @@ services:
       - ${CERT_DIR:-/etc/ssl/private}:/etc/ssl/private
 
   spamd:
-    image: slimta/spamassassin
+    image: ghcr.io/slimta/spamassassin
     build:
       context: ./spamassassin
 
