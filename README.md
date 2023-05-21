@@ -73,12 +73,12 @@ pymap-admin set-user test@example.com
 
 # Add an alias from 'alias@example.com' to 'test@example.com'
 pymap-admin set-user alias@example.com --no-password \
-    --param alias test@example.com
+    --param 'alias=test@example.com
 
 # Add an alias for all 'other.com' addresses, e.g. 'foo@other.com' would
 # alias to 'test+foo@example.com'
 pymap-admin set-user other.com --no-password \
-    --param alias 'test+{localpart}@example.com'
+    --param 'alias=test+{localpart}@example.com'
 
 # Change the password for address 'test@example.com' without
 # overwriting other metadata
