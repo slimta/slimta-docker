@@ -29,26 +29,37 @@ Redis is used to manage deliverable addresses on the mailserver. The
 `pymap-admin` tool can help manage them:
 
 ```
-usage: pymap-admin [-h] [--version] [--outfile PATH] [--host HOST] [--port PORT] {append,delete-user,get-user,list-users,ping,set-user} ...
+usage: pymap-admin [-h] [--version] [--config PATH] [--host HOST] [--port PORT] [--path PATH] [--token-file PATH] [--cert FILE] [--key FILE] [--cafile FILE] [--capath PATH] [--no-verify-cert] COMMAND ...
 
-Admin functions for a running pymap server.
+Admin functions for a running pymap server. Many arguments may also be given with a $PYMAP_ADMIN_* environment variable.
 
 positional arguments:
-  {append,delete-user,get-user,list-users,ping,set-user}
-                        which admin command to run
-    append              append a message to a mailbox
-    delete-user         delete a user
-    get-user            get a user
-    list-users          list users
-    ping                ping the server
-    set-user            assign a password to a user
+  COMMAND
+    append           append a message to a mailbox
+    change-password  assign a new password to a user
+    check            check the server health
+    delete-user      delete a user
+    get-user         get a user
+    login            login as a user
+    ping             ping the server
+    save-args        save connection arguments to config file
+    set-user         add or overwrite a user
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --version             show program's version number and exit
-  --outfile PATH        the output file (default: stdout)
-  --host HOST           host to connect to
-  --port PORT           port to connect to
+options:
+  -h, --help         show this help message and exit
+  --version          show program's version number and exit
+  --config PATH      connection info config file
+  --host HOST        server host
+  --port PORT        server port
+  --path PATH        server socket file
+  --token-file PATH  auth token file
+
+tls options:
+  --cert FILE        client certificate
+  --key FILE         client private key
+  --cafile FILE      CA cert file
+  --capath PATH      CA cert path
+  --no-verify-cert   disable TLS certificate verification
 ```
 
 Examples:
@@ -68,6 +79,10 @@ pymap-admin set-user alias@example.com --no-password \
 # alias to 'test+foo@example.com'
 pymap-admin set-user other.com --no-password \
     --param alias 'test+{localpart}@example.com'
+
+# Change the password for address 'test@example.com' without
+# overwriting other metadata
+pymap-admin change-password test@example.com
 
 # Get the raw user configuration for 'test@example.com'
 pymap-admin get-user test@example.com
