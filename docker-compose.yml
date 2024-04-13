@@ -76,6 +76,8 @@ services:
     image: ghcr.io/slimta/slimta
     build:
       context: ./slimta
+      platforms:
+        - "linux/amd64"
     entrypoint: slimta --no-relay
     environment:
       FQDN: ${FQDN}
@@ -93,6 +95,8 @@ services:
     image: ghcr.io/slimta/slimta
     build:
       context: ./slimta
+      platforms:
+        - "linux/amd64"
     entrypoint: slimta --no-edge
     environment:
       FQDN: ${FQDN}
@@ -126,6 +130,8 @@ services:
     image: ghcr.io/slimta/spamassassin
     build:
       context: ./spamassassin
+      platforms:
+        - "linux/amd64"
 
 secrets:
   lexicon_env:
