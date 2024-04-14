@@ -17,7 +17,6 @@ lookup:
 rules:
   inbound: &rules_inbound
     banner: '{fqdn} ESMTP Mail Delivery Agent'
-    dnsbl: zen.spamhaus.org
     reject_spf: [fail]
     reject_spam:
       type: spamassassin
@@ -25,9 +24,6 @@ rules:
     lookup_recipients: *lookup_addresses
   outbound: &rules_outbound
     banner: '{fqdn} ESMTP Mail Submission Agent'
-    dnsbl:
-      address: zen.spamhaus.org
-      ignore: ['127.0.0.10/31']
     lookup_credentials: *lookup_addresses
 
 tls:

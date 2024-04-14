@@ -6,7 +6,6 @@ services:
     deploy:
       mode: global
     command: >-
-      --dnsbl xbl.spamhaus.org
       --service :143 pymap:143
       --service :4190 pymap:4190
       --service :50051 pymap:50051?pp=noop
